@@ -6,6 +6,12 @@ Sometimes your GitHub repository gets messed up with unnecessary commits. The be
 If want to remove last `n` commits in different way that keep corresponding  changes, Run:
 
 ```
+import random
+
+# Generate a random number for uniqueness
+rand_num = random.randint(1000, 9999)
+temp_folder_name = f"temp{rand_num}"
+
 # Step 1: Install Git if it's not already installed
 !apt-get install git -y
 
@@ -23,9 +29,9 @@ repo_url = f"https://{ACCESS_TOKEN}@github.com/{USERNAME}/{REPO_NAME}.git"
 # Step 4: Clone the Repository
 !git clone {repo_url}
 
-# Step 5: Rename the cloned repository folder to "backup" and delete the .git folder inside it
-!mv {REPO_NAME} backup
-!rm -rf backup/.git
+# Step 5: Rename the cloned repository folder to "temp" and delete the .git folder inside it
+!mv {REPO_NAME} {temp_folder_name}
+!rm -rf {temp_folder_name}/.git
 
 # Step 6: Clone the repository again to the original folder name
 !git clone {repo_url}
@@ -45,11 +51,11 @@ repo_url = f"https://{ACCESS_TOKEN}@github.com/{USERNAME}/{REPO_NAME}.git"
 # Step 7: Delete all files and folders in the cloned repository except the .git folder
 !find . -not -name ".git" -not -path "./.git/*" -delete
 
-# Step 8: Copy all files and folders from the "backup" folder to the current repository folder
-!cp -r ../backup/* .
+# Step 8: Copy all files and folders from the "temp" folder to the current repository folder
+!cp -r ../{temp_folder_name}/* .
 
 # Step 9: Push the changes to the remote repository
 !git add .
-!git commit -m "Restored files from backup"
+!git commit -m "Updated by Reza Marzban"
 !git push origin main
 ```
